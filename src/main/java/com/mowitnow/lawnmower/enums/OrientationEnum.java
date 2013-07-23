@@ -4,21 +4,24 @@
 package com.mowitnow.lawnmower.enums;
 
 /**
- * 
+ * This enum is the orientation of the lawnmower<br>
+ * It's build as a circle
  * 
  * @author Kiva
  * 
  */
-public enum OrientationEnum implements IParseEnum<OrientationEnum> {
+public enum OrientationEnum {
 
-	N, E, W, S;
+	N, E, S, W;
 
 	/**
+	 * Parse the string to get the associated enum<br>
+	 * If enum doesn't exist, return null
+	 * 
 	 * @param orientation
 	 * @return
 	 */
-	@Override
-	public OrientationEnum parse(String orientation) {
+	public static OrientationEnum parse(String orientation) {
 		for (OrientationEnum orientationEnum : values()) {
 			if (orientationEnum.name().equals(orientation))
 				return orientationEnum;

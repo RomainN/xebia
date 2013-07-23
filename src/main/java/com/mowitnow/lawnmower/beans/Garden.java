@@ -23,7 +23,7 @@ public class Garden {
 	private List<Lawnmower> lawnmowers;
 
 	public void addLawnmower(Lawnmower lawnmower) {
-		if (lawnmower == null)
+		if (lawnmowers == null)
 			lawnmowers = new ArrayList<Lawnmower>();
 		lawnmowers.add(lawnmower);
 	}
