@@ -6,11 +6,11 @@ Test for xebia
 To build test
 =============
 
-Run the maven command:
+Run the maven command:<br/>
 mvn clean install
 
 
 To run test
 ===========
-Run the java command:
-java -jar target/lawnmower.jar <filename>
+Run the java command:<br/>
+java -jar target/lawnmower.jar &lt;filename&gt;
