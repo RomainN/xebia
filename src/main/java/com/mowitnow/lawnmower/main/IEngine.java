@@ -5,7 +5,7 @@ package com.mowitnow.lawnmower.main;
 
 import java.util.List;
 
-import com.mowitnow.lawnmower.exceptions.EngineException;
+import com.mowitnow.lawnmower.exceptions.MowItNowException;
 
 /**
  * 
@@ -20,9 +20,9 @@ public interface IEngine {
 	 * Create all elements for the engine from the list
 	 * 
 	 * @param list
-	 * @throws EngineException
+	 * @throws MowItNowException
 	 */
-	public void createEngine(List<String> list) throws EngineException;
+	public void createEngine(List<String> list) throws MowItNowException;
 
 	/**
 	 * Run the engine

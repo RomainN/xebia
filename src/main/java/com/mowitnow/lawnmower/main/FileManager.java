@@ -13,15 +13,19 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.mowitnow.lawnmower.exceptions.MowItNowException;
+
 /**
  * @author Kiva
  * 
  */
 public class FileManager {
 
-	final static private String ERROR_FILE_NOT_FOUND = "Your file does'nt exist or can't be read";
+	final static String ERROR_FILE_NOT_FOUND = "Your file does'nt exist or can't be read";
 
-	final static private String ERROR_FILE = "An error has occured when the file read";
+	final static String ERROR_FILE = "An error has occured when the file read";
 
 	/**
 	 * Transform the file to a {@link List} of {@link String}
@@ -29,7 +33,10 @@ public class FileManager {
 	 * @param fileName
 	 * @return
 	 */
-	public static List<String> parseFile(String fileName) {
+	public static List<String> parseFile(String fileName)
+			throws MowItNowException {
+		if (StringUtils.isBlank(fileName))
+			throw new MowItNowException(ERROR_FILE_NOT_FOUND);
 		List<String> list = new ArrayList<String>();
 		final File file = new File(fileName);
 		if (file.exists() && file.canRead()) {
@@ -46,12 +53,12 @@ public class FileManager {
 				}
 				inputStream.close();
 			} catch (FileNotFoundException e) {
-				System.err.println(ERROR_FILE_NOT_FOUND);
+				throw new MowItNowException(ERROR_FILE_NOT_FOUND);
 			} catch (IOException e) {
-				System.err.println(ERROR_FILE);
+				throw new MowItNowException(ERROR_FILE);
 			}
 		} else {
-			System.err.println(ERROR_FILE_NOT_FOUND);
+			throw new MowItNowException(ERROR_FILE_NOT_FOUND);
 		}
 		return list;
 	}

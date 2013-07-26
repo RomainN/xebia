@@ -5,7 +5,7 @@ package com.mowitnow.lawnmower.main;
 
 import java.util.List;
 
-import com.mowitnow.lawnmower.exceptions.EngineException;
+import com.mowitnow.lawnmower.exceptions.MowItNowException;
 
 /**
  * The main class to launch application
@@ -15,15 +15,22 @@ import com.mowitnow.lawnmower.exceptions.EngineException;
  */
 public class Main {
 
+	final static String USAGE = "Usage: java -jar lawnmower.jar <filename>";
+
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		if (args == null || args.length != 1) {
-			System.err.println("Usage: java -jar lawnmower.jar <filename>");
-			System.exit(1);
+			System.err.println(USAGE);
+			return;
 		}
-		launchApp(FileManager.parseFile(args[0]));
+		try {
+			launchApp(FileManager.parseFile(args[0]));
+		} catch (MowItNowException e) {
+			System.err.println(e.getMessage());
+			return;
+		}
 	}
 
 	/**
@@ -32,14 +39,9 @@ public class Main {
 	 * 
 	 * @param list
 	 */
-	public static void launchApp(List<String> list) {
+	public static void launchApp(List<String> list) throws MowItNowException {
 		final IEngine engine = new EngineImpl();
-		try {
-			engine.createEngine(list);
-		} catch (EngineException e) {
-			System.err.println(e.getMessage());
-			System.exit(1);
-		}
+		engine.createEngine(list);
 		engine.run();
 		engine.showResult();
 	}

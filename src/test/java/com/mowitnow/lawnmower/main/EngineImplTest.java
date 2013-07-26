@@ -3,6 +3,8 @@
  */
 package com.mowitnow.lawnmower.main;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -14,11 +16,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import com.mowitnow.lawnmower.beans.Coordinate;
 import com.mowitnow.lawnmower.beans.Garden;
 import com.mowitnow.lawnmower.beans.Lawnmower;
 import com.mowitnow.lawnmower.enums.MovementEnum;
 import com.mowitnow.lawnmower.enums.OrientationEnum;
-import com.mowitnow.lawnmower.exceptions.EngineException;
+import com.mowitnow.lawnmower.exceptions.MowItNowException;
 
 /**
  * @author Kiva
@@ -38,7 +41,7 @@ public class EngineImplTest {
 		try {
 			engine.createEngine(null);
 			Assert.fail();
-		} catch (EngineException e) {
+		} catch (MowItNowException e) {
 			Assert.assertEquals(EngineImpl.EMPTY_LIST, e.getMessage());
 		}
 
@@ -47,7 +50,7 @@ public class EngineImplTest {
 		try {
 			engine.createEngine(list);
 			Assert.fail();
-		} catch (EngineException e) {
+		} catch (MowItNowException e) {
 			Assert.assertEquals(EngineImpl.EMPTY_LIST, e.getMessage());
 		}
 
@@ -56,7 +59,7 @@ public class EngineImplTest {
 		try {
 			engine.createEngine(list);
 			Assert.fail();
-		} catch (EngineException e) {
+		} catch (MowItNowException e) {
 			Assert.assertEquals(EngineImpl.BAD_LIST, e.getMessage());
 		}
 
@@ -289,6 +292,46 @@ public class EngineImplTest {
 				lawnmower.getCurrentOrientation());
 		Assert.assertNull(lawnmower.getMovements());
 
+	}
+
+	@Test
+	public void showResult() throws NoSuchFieldException, SecurityException,
+			IllegalArgumentException, IllegalAccessException {
+		final Field fieldGarden = EngineImpl.class.getDeclaredField("garden");
+		fieldGarden.setAccessible(true);
+
+		final Garden garden = new Garden();
+
+		// Null test
+		engine.showResult();
+
+		// Empty list test
+		fieldGarden.set(engine, garden);
+		engine.showResult();
+
+		// Lawnmower null
+		garden.addLawnmower(null);
+		engine.showResult();
+
+		// Empty lawnmower
+		Lawnmower lawnmower = new Lawnmower();
+		garden.addLawnmower(lawnmower);
+
+		final ByteArrayOutputStream out = new ByteArrayOutputStream();
+		System.setOut(new PrintStream(out));
+
+		engine.showResult();
+		Assert.assertEquals("", out.toString());
+
+		// One good lawnmower
+		final Coordinate coordinate = new Coordinate();
+		coordinate.setX(1);
+		coordinate.setY(10);
+		lawnmower.setCoordinate(coordinate);
+		lawnmower.setCurrentOrientation(OrientationEnum.E);
+		out.reset();
+		engine.showResult();
+		Assert.assertEquals("1 10 E", out.toString().trim());
 	}
 
 }
