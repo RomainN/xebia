@@ -382,4 +382,190 @@ public class EngineImplTest {
 					.getMessage());
 		}
 	}
+
+	@Test
+	public void turnLawnmower() throws IllegalAccessException,
+			NoSuchMethodException, InvocationTargetException,
+			NoSuchFieldException, SecurityException {
+		final Method method = EngineImpl.class.getDeclaredMethod(
+				"turnLawnmower", Lawnmower.class, MovementEnum.class);
+		method.setAccessible(true);
+
+		Lawnmower lawnmower = new Lawnmower();
+		lawnmower.setCurrentOrientation(OrientationEnum.N);
+		// We make the turn to go at N
+		method.invoke(engine, lawnmower, MovementEnum.D);
+		Assert.assertEquals(OrientationEnum.E,
+				lawnmower.getCurrentOrientation());
+		method.invoke(engine, lawnmower, MovementEnum.D);
+		Assert.assertEquals(OrientationEnum.S,
+				lawnmower.getCurrentOrientation());
+		method.invoke(engine, lawnmower, MovementEnum.D);
+		Assert.assertEquals(OrientationEnum.W,
+				lawnmower.getCurrentOrientation());
+		method.invoke(engine, lawnmower, MovementEnum.D);
+		Assert.assertEquals(OrientationEnum.N,
+				lawnmower.getCurrentOrientation());
+
+		// The same in the other direction
+		method.invoke(engine, lawnmower, MovementEnum.G);
+		Assert.assertEquals(OrientationEnum.W,
+				lawnmower.getCurrentOrientation());
+		method.invoke(engine, lawnmower, MovementEnum.G);
+		Assert.assertEquals(OrientationEnum.S,
+				lawnmower.getCurrentOrientation());
+		method.invoke(engine, lawnmower, MovementEnum.G);
+		Assert.assertEquals(OrientationEnum.E,
+				lawnmower.getCurrentOrientation());
+		method.invoke(engine, lawnmower, MovementEnum.G);
+		Assert.assertEquals(OrientationEnum.N,
+				lawnmower.getCurrentOrientation());
+	}
+
+	@Test
+	public void goLawnmower() throws IllegalAccessException,
+			NoSuchMethodException, InvocationTargetException,
+			NoSuchFieldException, SecurityException {
+		final Method method = EngineImpl.class.getDeclaredMethod("goLawnmower",
+				Lawnmower.class);
+		method.setAccessible(true);
+		final Field fieldGarden = EngineImpl.class.getDeclaredField("garden");
+		fieldGarden.setAccessible(true);
+		final Garden garden = new Garden();
+		garden.setCorner(new Coordinate(3, 4));
+		fieldGarden.set(engine, garden);
+
+		Lawnmower lawnmower = new Lawnmower();
+		lawnmower.setCurrentOrientation(OrientationEnum.N);
+		lawnmower.setCoordinate(new Coordinate(0, 0));
+		// The garden is 3,4. The lawnmower does the turn
+		method.invoke(engine, lawnmower);
+		Assert.assertEquals((Integer) 0, lawnmower.getCoordinate().getX());
+		Assert.assertEquals((Integer) 1, lawnmower.getCoordinate().getY());
+
+		method.invoke(engine, lawnmower);
+		Assert.assertEquals((Integer) 0, lawnmower.getCoordinate().getX());
+		Assert.assertEquals((Integer) 2, lawnmower.getCoordinate().getY());
+
+		method.invoke(engine, lawnmower);
+		Assert.assertEquals((Integer) 0, lawnmower.getCoordinate().getX());
+		Assert.assertEquals((Integer) 3, lawnmower.getCoordinate().getY());
+
+		method.invoke(engine, lawnmower);
+		Assert.assertEquals((Integer) 0, lawnmower.getCoordinate().getX());
+		Assert.assertEquals((Integer) 4, lawnmower.getCoordinate().getY());
+
+		// On the top, can't go ahead
+		method.invoke(engine, lawnmower);
+		Assert.assertEquals((Integer) 0, lawnmower.getCoordinate().getX());
+		Assert.assertEquals((Integer) 4, lawnmower.getCoordinate().getY());
+
+		// To right
+		lawnmower.setCurrentOrientation(OrientationEnum.E);
+		method.invoke(engine, lawnmower);
+		Assert.assertEquals((Integer) 1, lawnmower.getCoordinate().getX());
+		Assert.assertEquals((Integer) 4, lawnmower.getCoordinate().getY());
+
+		method.invoke(engine, lawnmower);
+		Assert.assertEquals((Integer) 2, lawnmower.getCoordinate().getX());
+		Assert.assertEquals((Integer) 4, lawnmower.getCoordinate().getY());
+
+		method.invoke(engine, lawnmower);
+		Assert.assertEquals((Integer) 3, lawnmower.getCoordinate().getX());
+		Assert.assertEquals((Integer) 4, lawnmower.getCoordinate().getY());
+
+		// On the top right, can't go ahead
+		method.invoke(engine, lawnmower);
+		Assert.assertEquals((Integer) 3, lawnmower.getCoordinate().getX());
+		Assert.assertEquals((Integer) 4, lawnmower.getCoordinate().getY());
+
+		// To right
+		lawnmower.setCurrentOrientation(OrientationEnum.S);
+		method.invoke(engine, lawnmower);
+		Assert.assertEquals((Integer) 3, lawnmower.getCoordinate().getX());
+		Assert.assertEquals((Integer) 3, lawnmower.getCoordinate().getY());
+
+		method.invoke(engine, lawnmower);
+		Assert.assertEquals((Integer) 3, lawnmower.getCoordinate().getX());
+		Assert.assertEquals((Integer) 2, lawnmower.getCoordinate().getY());
+
+		method.invoke(engine, lawnmower);
+		Assert.assertEquals((Integer) 3, lawnmower.getCoordinate().getX());
+		Assert.assertEquals((Integer) 1, lawnmower.getCoordinate().getY());
+
+		method.invoke(engine, lawnmower);
+		Assert.assertEquals((Integer) 3, lawnmower.getCoordinate().getX());
+		Assert.assertEquals((Integer) 0, lawnmower.getCoordinate().getY());
+
+		// On bottom right, can't go ahead
+		method.invoke(engine, lawnmower);
+		Assert.assertEquals((Integer) 3, lawnmower.getCoordinate().getX());
+		Assert.assertEquals((Integer) 0, lawnmower.getCoordinate().getY());
+
+		// To right
+		lawnmower.setCurrentOrientation(OrientationEnum.W);
+		method.invoke(engine, lawnmower);
+		Assert.assertEquals((Integer) 2, lawnmower.getCoordinate().getX());
+		Assert.assertEquals((Integer) 0, lawnmower.getCoordinate().getY());
+
+		method.invoke(engine, lawnmower);
+		Assert.assertEquals((Integer) 1, lawnmower.getCoordinate().getX());
+		Assert.assertEquals((Integer) 0, lawnmower.getCoordinate().getY());
+
+		method.invoke(engine, lawnmower);
+		Assert.assertEquals((Integer) 0, lawnmower.getCoordinate().getX());
+		Assert.assertEquals((Integer) 0, lawnmower.getCoordinate().getY());
+
+		// The turn is finished, can't go ahead
+		method.invoke(engine, lawnmower);
+		Assert.assertEquals((Integer) 0, lawnmower.getCoordinate().getX());
+		Assert.assertEquals((Integer) 0, lawnmower.getCoordinate().getY());
+	}
+
+	@Test
+	public void run() throws NoSuchFieldException, SecurityException,
+			IllegalArgumentException, IllegalAccessException {
+		final Field fieldGarden = EngineImpl.class.getDeclaredField("garden");
+		fieldGarden.setAccessible(true);
+
+		final Garden garden = new Garden();
+		garden.setCorner(new Coordinate(3, 2));
+		// Null test
+		engine.run();
+
+		// Empty list test
+		fieldGarden.set(engine, garden);
+		engine.run();
+
+		// One lawnmowers with movements, one without
+		Lawnmower lawnmower1 = new Lawnmower();
+		lawnmower1.setCoordinate(new Coordinate(0, 0));
+		lawnmower1.setCurrentOrientation(OrientationEnum.W);
+		lawnmower1.addMovement(MovementEnum.A);
+		lawnmower1.addMovement(MovementEnum.G);
+		lawnmower1.addMovement(MovementEnum.G);
+		lawnmower1.addMovement(MovementEnum.A);
+		lawnmower1.addMovement(MovementEnum.A);
+		lawnmower1.addMovement(MovementEnum.A);
+		lawnmower1.addMovement(MovementEnum.A);
+		lawnmower1.addMovement(MovementEnum.A);
+		lawnmower1.addMovement(MovementEnum.A);
+		lawnmower1.addMovement(MovementEnum.D);
+		garden.addLawnmower(lawnmower1);
+
+		Lawnmower lawnmower2 = new Lawnmower();
+		lawnmower2.setCoordinate(new Coordinate(1, 2));
+		lawnmower2.setCurrentOrientation(OrientationEnum.S);
+		garden.addLawnmower(lawnmower2);
+
+		engine.run();
+		Assert.assertEquals(OrientationEnum.S,
+				lawnmower1.getCurrentOrientation());
+		Assert.assertEquals((Integer) 3, lawnmower1.getCoordinate().getX());
+		Assert.assertEquals((Integer) 0, lawnmower1.getCoordinate().getY());
+		Assert.assertEquals(OrientationEnum.S,
+				lawnmower2.getCurrentOrientation());
+		Assert.assertEquals((Integer) 1, lawnmower2.getCoordinate().getX());
+		Assert.assertEquals((Integer) 2, lawnmower2.getCoordinate().getY());
+	}
 }

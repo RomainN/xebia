@@ -134,8 +134,74 @@ public class EngineImpl implements IEngine {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		if (garden != null
+				&& CollectionUtils.isNotEmpty(garden.getLawnmowers())) {
+			// At this step, all lawnmowers are in the garden, well positioned
+			for (Lawnmower lawnmower : garden.getLawnmowers()) {
+				runLawnmower(lawnmower);
+			}
+		}
+	}
 
+	/**
+	 * @param lawnmower
+	 */
+	private void runLawnmower(Lawnmower lawnmower) {
+		// A lawnmower can doesn't have movement
+		if (CollectionUtils.isNotEmpty(lawnmower.getMovements())) {
+			for (MovementEnum movementEnum : lawnmower.getMovements()) {
+				// If go ahead movement, goes, else turns on itself
+				if (MovementEnum.A.equals(movementEnum))
+					goLawnmower(lawnmower);
+				else
+					turnLawnmower(lawnmower, movementEnum);
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * The lawnmower turns on itself
+	 * 
+	 * @param lawnmower
+	 * @param movementEnum
+	 */
+	private void turnLawnmower(Lawnmower lawnmower, MovementEnum movementEnum) {
+		// Position on "tab" of orientation
+		int index = lawnmower.getCurrentOrientation().ordinal();
+		index += MovementEnum.D.equals(movementEnum) ? 1 : -1;
+		if (index >= OrientationEnum.values().length)
+			index = 0;
+		else if (index < 0)
+			index = OrientationEnum.values().length - 1;
+		lawnmower.setCurrentOrientation(OrientationEnum.values()[index]);
+	}
+
+	/**
+	 * The lawnmower goes ahead if it can
+	 * 
+	 * @param lawnmower
+	 */
+	private void goLawnmower(Lawnmower lawnmower) {
+		// If N or S, y move else x
+		if (OrientationEnum.N.equals(lawnmower.getCurrentOrientation())
+				|| OrientationEnum.S.equals(lawnmower.getCurrentOrientation())) {
+			int y = lawnmower.getCoordinate().getY();
+			y += OrientationEnum.N.equals(lawnmower.getCurrentOrientation()) ? 1
+					: -1;
+			// If movement goes out of the garden, don't move
+			if (y <= garden.getCorner().getY() && y >= 0) {
+				lawnmower.getCoordinate().setY(y);
+			}
+		} else {
+			int x = lawnmower.getCoordinate().getX();
+			x += OrientationEnum.E.equals(lawnmower.getCurrentOrientation()) ? 1
+					: -1;
+			// If movement goes out of the garden, don't move
+			if (x <= garden.getCorner().getX() && x >= 0) {
+				lawnmower.getCoordinate().setX(x);
+			}
+		}
 	}
 
 	@Override

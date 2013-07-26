@@ -51,6 +51,7 @@ public class MainTest {
 		String[] fileOk = { url.getPath() };
 		Main.main(fileOk);
 		Assert.assertEquals(0, err.size());
-		Assert.assertEquals("1 3 N" + lineSeparator + "5 1 E", out.toString());
+		Assert.assertEquals("1 3 N" + lineSeparator + "5 1 E" + lineSeparator,
+				out.toString());
 	}
 }
