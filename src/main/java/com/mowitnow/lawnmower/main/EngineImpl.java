@@ -30,6 +30,8 @@ public class EngineImpl implements IEngine {
 
 	static String BAD_LIST = "Command list is malformed";
 
+	static String OUT_GARDEN = "Some lawnmowers are out of the garden";
+
 	private Garden garden;
 
 	private List<String> listString;
@@ -44,6 +46,21 @@ public class EngineImpl implements IEngine {
 		listString = new ArrayList<String>(list);
 		buildCoordinate();
 		buildLawnmower();
+		checkLawnmower();
+	}
+
+	/**
+	 * This method checks that lawnmowers are well in the garden<br>
+	 * The method assumes the garden is good and all lawnmowers too
+	 */
+	private void checkLawnmower() throws MowItNowException {
+		for (Lawnmower lawnmower : garden.getLawnmowers()) {
+			if (lawnmower.getCoordinate().getX() > garden.getCorner().getX()
+					|| lawnmower.getCoordinate().getY() > garden.getCorner()
+							.getY()) {
+				throw new MowItNowException(OUT_GARDEN);
+			}
+		}
 	}
 
 	/**

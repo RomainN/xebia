@@ -118,6 +118,17 @@ public class EngineImplTest {
 				.size());
 		Assert.assertEquals(MovementEnum.A, garden.getLawnmowers().get(0)
 				.getMovements().get(1));
+
+		// One lawnmower is out of the garden
+		list.add("3 22 S");
+		list.add("A");
+		try {
+			engine.createEngine(list);
+			Assert.fail();
+		} catch (MowItNowException e) {
+			Assert.assertEquals(EngineImpl.OUT_GARDEN, e.getMessage());
+		}
+
 	}
 
 	@Test
@@ -324,14 +335,51 @@ public class EngineImplTest {
 		Assert.assertEquals("", out.toString());
 
 		// One good lawnmower
-		final Coordinate coordinate = new Coordinate();
-		coordinate.setX(1);
-		coordinate.setY(10);
-		lawnmower.setCoordinate(coordinate);
+		lawnmower.setCoordinate(new Coordinate(1, 10));
 		lawnmower.setCurrentOrientation(OrientationEnum.E);
 		out.reset();
 		engine.showResult();
 		Assert.assertEquals("1 10 E", out.toString().trim());
 	}
 
+	@Test
+	public void checkLawnmower() throws IllegalAccessException,
+			NoSuchMethodException, InvocationTargetException,
+			NoSuchFieldException, SecurityException {
+		final Method method = EngineImpl.class
+				.getDeclaredMethod("checkLawnmower");
+		method.setAccessible(true);
+		final Field fieldGarden = EngineImpl.class.getDeclaredField("garden");
+		fieldGarden.setAccessible(true);
+		final Garden garden = new Garden();
+		garden.setCorner(new Coordinate(3, 4));
+		fieldGarden.set(engine, garden);
+
+		// Good lawnmower
+		Lawnmower lawnmower = new Lawnmower();
+		lawnmower.setCoordinate(new Coordinate(1, 1));
+		garden.addLawnmower(lawnmower);
+		method.invoke(engine);
+
+		// Lawnmower out by x
+		lawnmower.getCoordinate().setX(10);
+		try {
+			method.invoke(engine);
+			Assert.fail();
+		} catch (InvocationTargetException e) {
+			Assert.assertEquals(EngineImpl.OUT_GARDEN, e.getTargetException()
+					.getMessage());
+		}
+
+		// Lawnmower out by y
+		lawnmower.getCoordinate().setX(0);
+		lawnmower.getCoordinate().setY(5);
+		try {
+			method.invoke(engine);
+			Assert.fail();
+		} catch (InvocationTargetException e) {
+			Assert.assertEquals(EngineImpl.OUT_GARDEN, e.getTargetException()
+					.getMessage());
+		}
+	}
 }

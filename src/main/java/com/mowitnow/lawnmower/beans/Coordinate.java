@@ -15,6 +15,15 @@ public class Coordinate {
 
 	private Integer y;
 
+	public Coordinate() {
+		super();
+	}
+
+	public Coordinate(Integer x, Integer y) {
+		this.x = x;
+		this.y = y;
+	}
+
 	/**
 	 * @return the y
 	 */
