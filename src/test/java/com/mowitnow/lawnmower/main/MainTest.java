@@ -53,5 +53,22 @@ public class MainTest {
 		Assert.assertEquals(0, err.size());
 		Assert.assertEquals("1 3 N" + lineSeparator + "5 1 E" + lineSeparator,
 				out.toString());
+
+		// More complicated tests
+		out.reset();
+		url = ClassLoader.getSystemResource("test2");
+		String[] test2 = { url.getPath() };
+		Main.main(test2);
+		Assert.assertEquals(0, err.size());
+		Assert.assertEquals("0 10 E" + lineSeparator + "0 28 S" + lineSeparator
+				+ "0 1 N" + lineSeparator, out.toString());
+
+		out.reset();
+		url = ClassLoader.getSystemResource("test3");
+		String[] test3 = { url.getPath() };
+		Main.main(test3);
+		Assert.assertEquals(0, err.size());
+		Assert.assertEquals("2 2 N" + lineSeparator, out.toString());
+
 	}
 }
